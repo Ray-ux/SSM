@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.4//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ray.ssm.dao.GoodsDao">
+    <resultMap id="resultMap" type="Goods">
+<!--        property属性名(entity里),column字段名(数据表)-->
+        <id property="id" column="id" javaType="Integer"/>
+        <result property="name" column="name" javaType="String"/>
+        <result property="price" column="price" javaType="Double"/>
+        <result property="quantity" column="quantity" javaType="Integer"/>
+        <result property="updateTime" column="update_time" javaType="java.sql.Date"/>
+    </resultMap>
+<!--  useGeneratedKeys：新增商品信息，并得到新增数据的主键，主键自增
+      还可以使用selectKey，
+      <selectKey resultType="Integer" keyProperty="id" order="AFTER">
+                        select last_insert_id()
+                    </selectKey>
+
+      两者区别在于:selectKey适用于所有数据库，使用麻烦
+                  useGeneratedKeys只支持自增主键数据库，使用简单
+
+-->
+   <insert id="insert" parameterType="Goods" useGeneratedKeys="true" keyProperty="id" keyColumn="id">
+       insert into ssm.goods(name, price, quantity, update_time)
+                    VALUES(#{name},#{price},#{quantity},#{updateTime});
+
+                    <selectKey resultType="Integer" keyProperty="id" order="AFTER">
+                        select last_insert_id()
+                    </selectKey>
+   </insert>
+
+    <update id="update" parameterType="Goods">
+        update ssm.goods set name=#{name},price=#{price},quantity=#{quantity},update_time=#{updateTime} where id=#{id};
+    </update>
+
+    <delete id="delete" parameterType="Integer">
+        delete from ssm.goods where id=#{id};
+    </delete>
+
+    <select id="selectById" parameterType="Integer" resultMap="resultMap">
+        select * from ssm.goods where id=#{id};
+    </select>
+
+    <select id="selectAll" resultMap="resultMap">
+        select * from ssm.goods;
+    </select>
+
+</mapper>
